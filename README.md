@@ -1,9 +1,9 @@
-### Calculator
+# Calculator
 
 For Simple Calculations
 :link: [**Live Preview**](https://enigma9119.github.io/calculator)
 
-### Built With
+## Built With
 
 - HTML5
 - CSS3

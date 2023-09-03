@@ -5,7 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calculator</title>
     <link rel="stylesheet" href="styles.css" />
+    <script
+      src="https://kit.fontawesome.com/684fa1394e.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="script.js" defer></script>
   </head>
-  <body></body>
+  <body>
+    <div class="container">
+      <div class="display"></div>
+      <div class="buttons">
+        <div class="row">
+          <button class="clear-button">AC</button>
+          <button class="clear-button">
+            <i class="fa-solid fa-delete-left"></i>
+          </button>
+          <button class="operator-button">%</button>
+          <button class="operator-button">
+            <i class="fa-solid fa-divide"></i>
+          </button>
+        </div>
+        <div class="row">
+          <button>7</button>
+          <button>8</button>
+          <button>9</button>
+          <button class="operator-button">x</button>
+        </div>
+        <div class="row">
+          <button>4</button>
+          <button>5</button>
+          <button>6</button>
+          <button class="operator-button">-</button>
+        </div>
+        <div class="row">
+          <button>1</button>
+          <button>2</button>
+          <button>3</button>
+          <button class="operator-button">+</button>
+        </div>
+        <div class="row small">
+          <button>0</button>
+          <button>.</button>
+          <button class="equal-button">=</button>
+        </div>
+      </div>
+    </div>
+    <footer>Smitesh Kharat © 2023</footer>
+  </body>
 </html>

@@ -1,0 +1,109 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background-color: #262326;
+}
+
+body,
+button {
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 18px;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 128px;
+  gap: 32px;
+}
+
+.container {
+  width: 400px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 20px;
+  box-shadow: 5px 5px 5px #dc9d39;
+  background-color: #4a291a;
+  padding: 20px;
+}
+
+.display {
+  flex: 1;
+  border: 7px inset black;
+  padding: 16px;
+  border-radius: 16px;
+  background-color: #9b8385;
+}
+
+.buttons {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.row {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.small {
+  gap: 22px;
+}
+
+button {
+  flex-basis: 20%;
+  border: 2px solid black;
+  border-radius: 60px;
+  background-color: #dc9d39;
+  box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.24);
+  transition: 0.2s all;
+  padding: 20px;
+}
+
+button:hover {
+  background-color: #dfbd86;
+  transform: translateY(-3px);
+}
+
+button:active {
+  transform: translateY(5px) scale(0.98);
+}
+
+.operator-button {
+  font-size: 20px;
+}
+
+.equal-button {
+  flex: 1;
+  font-size: 30px;
+}
+
+.operator-button:hover {
+  background-color: #8693df;
+}
+
+.clear-button:hover {
+  background-color: #eb4b4b;
+}
+
+.equal-button:hover {
+  background-color: #86df99;
+}
+
+footer {
+  color: gainsboro;
+}

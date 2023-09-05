@@ -155,12 +155,20 @@ function execute(e) {
       updateNumber(buttonText);
     }
   } else if (isDigit(buttonText) || buttonText === ".") {
-    // In both num1 and num2 states, getting a new digit updates the number,
-    // and doesn't lead to any state change.
+    // If a digit is selected after pressing 'equal to' button, reset everything
+    // and transition to num1 state.
+    if (operator === "=") {
+      num1 = "";
+      clearDisplay();
+      transitionToNum1State();
+    }
+
+    // In both num1 and num2 states, getting a new digit updates the number.
     updateNumber(buttonText);
   } else if (buttonText === "=") {
     // Calculate if the second number is valid.
     calculateAndDisplayResult();
+    if (num2 != "") operator = "=";
   } else {
     // If no other branches were valid, this means a valid operator was pressed.
     calculateAndDisplayResult();

@@ -46,7 +46,7 @@ function operate(num1, num2, operator) {
   return round(result, 2);
 }
 
-function populateDisplay(text) {
+function addToDisplay(text) {
   const display = document.querySelector(".display");
   display.textContent += text;
 }
@@ -58,23 +58,42 @@ function clearDisplay() {
 
 function deleteFromDisplay() {
   const displayText = document.querySelector(".display").textContent;
+  charToDelete = displayText.slice(-1);
 
   clearDisplay();
-  populateDisplay(displayText.slice(0, -1));
+  addToDisplay(displayText.slice(0, -1));
 
   if (state === "num1") {
-    num1 = Math.round(num1 / 10);
-  } else {
-    num2 = Math.round(num2 / 10);
-  }
-
-  if (Number.isNaN(+displayText[-1])) {
-    state = "num1";
+    num1 = Math.floor(num1 / 10);
+    if (!num1) transitionToInitialState();
+  } else if (state === "num2") {
+    num2 = Math.floor(num2 / 10);
+    if (VALID_OPERATORS.includes(charToDelete)) transitionToNum1State();
   }
 }
 
-function updateNumber(digit, state) {
-  populateDisplay(digit);
+function transitionToInitialState() {
+  state = "initial";
+  [num1, num2, operator] = [null, null, ""];
+}
+
+function transitionToNum1State() {
+  state = "num1";
+  [num2, operator] = [null, ""];
+}
+
+function transitionToNum2State(pressedButton) {
+  state = "num2";
+  operator = pressedButton;
+  addToDisplay(operator);
+}
+
+function isDigit(text) {
+  return +text >= 0 && +text <= 9;
+}
+
+function updateNumber(digit) {
+  addToDisplay(digit);
 
   if (state === "num1") {
     num1 = num1 * 10 + digit;
@@ -85,6 +104,7 @@ function updateNumber(digit, state) {
 
 function execute(e) {
   const classListArray = Array.from(e.target.classList);
+  // QUESTION: Why is it that sometimes the outer class listener is triggered, and sometimes the inner class?
   if (
     classListArray.includes("delete") ||
     classListArray.includes("fa-delete-left")
@@ -94,44 +114,54 @@ function execute(e) {
   }
 
   let buttonText = e.target.textContent;
-  if (classListArray.includes("divide")) buttonText = "/";
+  if (
+    classListArray.includes("divide") ||
+    classListArray.includes("fa-divide")
+  ) {
+    buttonText = "/";
+  }
 
   if (buttonText === "AC") {
     clearDisplay();
-    [num1, num2, operator] = [0, 0, ""];
-    state = "empty";
-  } else if (state == "empty") {
-    if (+buttonText >= 0 && +buttonText <= 9) {
-      state = "num1";
+    transitionToInitialState();
+  } else if (state == "initial") {
+    // The only way to transition out of the initial state is for the user
+    // to input a valid digit.
+    if (isDigit(buttonText)) {
+      transitionToNum1State();
+      updateNumber(+buttonText);
+    }
+  } else if (isDigit(buttonText)) {
+    // In both num1 and num2 states, getting a new digit updates the number,
+    // and doesn't lead to any state change.
+    updateNumber(+buttonText);
+  } else if (buttonText === "=") {
+    if (state === "num1") return;
+
+    if (state === "num2" && num2 != null) {
+      let result = operate(num1, num2, operator);
       clearDisplay();
-      updateNumber(+buttonText, state);
+      addToDisplay(result);
+      transitionToNum1State();
+      num1 = result;
     }
-  } else if (+buttonText >= 0 && +buttonText <= 9) {
-    updateNumber(+buttonText, state);
-  } else if (state === "num1") {
-    operator = buttonText;
-    populateDisplay(operator);
-    state = "num2";
-  } else if (num2 && state === "num2") {
-    let result = operate(num1, num2, operator);
-    [num1, num2] = [result, 0];
-
-    if (buttonText != "=") {
-      operator = buttonText;
-      result += operator;
-    } else {
-      operator = "";
-      state = "empty";
-      num1 = 0;
+  } else {
+    // If no other branches were valid, this means a valid operator was pressed.
+    if (state === "num1") {
+      transitionToNum2State(buttonText);
+    } else if (state === "num2") {
+      let result = operate(num1, num2, operator);
+      clearDisplay();
+      addToDisplay(result);
+      [num1, num2] = [result, null];
     }
-
-    clearDisplay();
-    populateDisplay(result);
   }
 }
 
-let [num1, num2, operator] = [0, 0, ""];
-let state = "empty";
+// Three main states are possible: initial, num1, and num2
+let state = "initial";
+let [num1, num2, operator] = [null, null, ""];
+const VALID_OPERATORS = ["+", "-", "*", "/", "%"];
 
 const buttons = document.querySelectorAll("button");
 buttons.forEach(button => button.addEventListener("click", execute));

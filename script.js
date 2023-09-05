@@ -25,6 +25,8 @@ function round(num, precision) {
 
 function operate(num1, num2, operator) {
   let result;
+  [num1, num2] = [Number(num1), Number(num2)];
+
   switch (operator) {
     case "+":
       result = add(num1, num2);
@@ -74,12 +76,12 @@ function deleteFromDisplay() {
 
 function transitionToInitialState() {
   state = "initial";
-  [num1, num2, operator] = [null, null, ""];
+  [num1, num2, operator] = [null, null, null];
 }
 
 function transitionToNum1State() {
   state = "num1";
-  [num2, operator] = [null, ""];
+  [num2, operator] = [null, null];
 }
 
 function transitionToNum2State(pressedButton) {
@@ -96,9 +98,11 @@ function updateNumber(digit) {
   addToDisplay(digit);
 
   if (state === "num1") {
-    num1 = num1 * 10 + digit;
+    num1 += digit;
   } else {
-    num2 = num2 * 10 + digit;
+    // QUESTION: Why is this resulting in string "null<digit>"? num1 doesn't seem to do that.
+    if (num2 === null) num2 = "";
+    num2 += digit;
   }
 }
 
@@ -131,10 +135,10 @@ function execute(e) {
       transitionToNum1State();
       updateNumber(+buttonText);
     }
-  } else if (isDigit(buttonText)) {
+  } else if (isDigit(buttonText) || buttonText === ".") {
     // In both num1 and num2 states, getting a new digit updates the number,
     // and doesn't lead to any state change.
-    updateNumber(+buttonText);
+    updateNumber(buttonText);
   } else if (buttonText === "=") {
     if (state === "num1") return;
 
@@ -160,7 +164,7 @@ function execute(e) {
 
 // Three main states are possible: initial, num1, and num2
 let state = "initial";
-let [num1, num2, operator] = [null, null, ""];
+let [num1, num2, operator] = [null, null, null];
 const VALID_OPERATORS = ["+", "-", "*", "/", "%"];
 
 const buttons = document.querySelectorAll("button");

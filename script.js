@@ -106,7 +106,7 @@ function isDigit(text) {
 function updateNumber(digit) {
   addToDisplay(digit);
 
-  if (state === "num1") {
+  if (state === "num1" || state === "initial") {
     num1 += digit;
   } else {
     num2 += digit;
@@ -116,10 +116,12 @@ function updateNumber(digit) {
 }
 
 function calculateAndDisplayResult() {
-  let result = operate(num1, num2, operator);
-  clearDisplay();
-  addToDisplay(result);
-  [num1, num2] = [result, ""];
+  if (num2 != "") {
+    let result = operate(num1, num2, operator);
+    clearDisplay();
+    addToDisplay(result);
+    [num1, num2] = [result, ""];
+  }
 }
 
 function execute(e) {
@@ -150,6 +152,8 @@ function execute(e) {
     if (isDigit(buttonText)) {
       transitionToNum1State();
       updateNumber(buttonText);
+    } else if ((num1 === "" && buttonText === "-") || buttonText === ".") {
+      updateNumber(buttonText);
     }
   } else if (isDigit(buttonText) || buttonText === ".") {
     // In both num1 and num2 states, getting a new digit updates the number,
@@ -157,11 +161,10 @@ function execute(e) {
     updateNumber(buttonText);
   } else if (buttonText === "=") {
     // Calculate if the second number is valid.
-    if (state === "num2" && num2 != "") calculateAndDisplayResult();
+    calculateAndDisplayResult();
   } else {
     // If no other branches were valid, this means a valid operator was pressed.
-    if (state === "num2") calculateAndDisplayResult();
-
+    calculateAndDisplayResult();
     transitionToNum2State(buttonText);
   }
 }
@@ -169,7 +172,7 @@ function execute(e) {
 // Three main states are possible: initial, num1, and num2
 let state = "initial";
 let [num1, num2, operator] = ["", "", ""];
-const VALID_OPERATORS = ["+", "-", "*", "/", "%"];
+const VALID_OPERATORS = ["+", "-", "x", "/", "%"];
 
 const buttons = document.querySelectorAll("button");
 buttons.forEach(button => button.addEventListener("click", execute));

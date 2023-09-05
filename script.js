@@ -76,12 +76,12 @@ function deleteFromDisplay() {
 
 function transitionToInitialState() {
   state = "initial";
-  [num1, num2, operator] = [null, null, null];
+  [num1, num2, operator] = ["", "", ""];
 }
 
 function transitionToNum1State() {
   state = "num1";
-  [num2, operator] = [null, null];
+  [num2, operator] = ["", ""];
 }
 
 function transitionToNum2State(pressedButton) {
@@ -100,10 +100,15 @@ function updateNumber(digit) {
   if (state === "num1") {
     num1 += digit;
   } else {
-    // QUESTION: Why is this resulting in string "null<digit>"? num1 doesn't seem to do that.
-    if (num2 === null) num2 = "";
     num2 += digit;
   }
+}
+
+function calculateAndDisplayResult() {
+  let result = operate(num1, num2, operator);
+  clearDisplay();
+  addToDisplay(result);
+  [num1, num2] = [result, ""];
 }
 
 function execute(e) {
@@ -133,38 +138,26 @@ function execute(e) {
     // to input a valid digit.
     if (isDigit(buttonText)) {
       transitionToNum1State();
-      updateNumber(+buttonText);
+      updateNumber(buttonText);
     }
   } else if (isDigit(buttonText) || buttonText === ".") {
     // In both num1 and num2 states, getting a new digit updates the number,
     // and doesn't lead to any state change.
     updateNumber(buttonText);
   } else if (buttonText === "=") {
-    if (state === "num1") return;
-
-    if (state === "num2" && num2 != null) {
-      let result = operate(num1, num2, operator);
-      clearDisplay();
-      addToDisplay(result);
-      transitionToNum1State();
-      num1 = result;
-    }
+    // Calculate if the second number is valid.
+    if (state === "num2" && num2 != "") calculateAndDisplayResult();
   } else {
     // If no other branches were valid, this means a valid operator was pressed.
-    if (state === "num1") {
-      transitionToNum2State(buttonText);
-    } else if (state === "num2") {
-      let result = operate(num1, num2, operator);
-      clearDisplay();
-      addToDisplay(result);
-      [num1, num2] = [result, null];
-    }
+    if (state === "num2") calculateAndDisplayResult();
+
+    transitionToNum2State(buttonText);
   }
 }
 
 // Three main states are possible: initial, num1, and num2
 let state = "initial";
-let [num1, num2, operator] = [null, null, null];
+let [num1, num2, operator] = ["", "", ""];
 const VALID_OPERATORS = ["+", "-", "*", "/", "%"];
 
 const buttons = document.querySelectorAll("button");

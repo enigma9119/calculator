@@ -61,16 +61,15 @@ function clearDisplay() {
 function deleteFromDisplay() {
   const displayText = document.querySelector(".display").textContent;
   const charToDelete = displayText.slice(-1);
-  const remaining = displayText.slice(0, -1);
 
   clearDisplay();
-  addToDisplay(remaining);
+  addToDisplay(displayText.slice(0, -1));
 
   if (state === "num1") {
-    num1 = remaining;
+    num1 = num1.slice(0, -1);
     if (num1 === "") transitionToInitialState();
   } else if (state === "num2") {
-    num2 = remaining;
+    num2 = num2.slice(0, -1);
     if (VALID_OPERATORS.includes(charToDelete)) transitionToNum1State();
   }
 

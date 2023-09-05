@@ -60,34 +60,43 @@ function clearDisplay() {
 
 function deleteFromDisplay() {
   const displayText = document.querySelector(".display").textContent;
-  charToDelete = displayText.slice(-1);
+  const charToDelete = displayText.slice(-1);
+  const remaining = displayText.slice(0, -1);
 
   clearDisplay();
-  addToDisplay(displayText.slice(0, -1));
+  addToDisplay(remaining);
 
   if (state === "num1") {
-    num1 = Math.floor(num1 / 10);
-    if (!num1) transitionToInitialState();
+    num1 = remaining;
+    if (num1 === "") transitionToInitialState();
   } else if (state === "num2") {
-    num2 = Math.floor(num2 / 10);
+    num2 = remaining;
     if (VALID_OPERATORS.includes(charToDelete)) transitionToNum1State();
+  }
+
+  if (charToDelete === ".") {
+    document.querySelector(".dot-button").disabled = false;
   }
 }
 
 function transitionToInitialState() {
   state = "initial";
   [num1, num2, operator] = ["", "", ""];
+  document.querySelector(".dot-button").disabled = false;
 }
 
 function transitionToNum1State() {
   state = "num1";
   [num2, operator] = ["", ""];
+
+  if (num1.includes(".")) document.querySelector(".dot-button").disabled = true;
 }
 
 function transitionToNum2State(pressedButton) {
   state = "num2";
   operator = pressedButton;
   addToDisplay(operator);
+  document.querySelector(".dot-button").disabled = false;
 }
 
 function isDigit(text) {
@@ -102,6 +111,8 @@ function updateNumber(digit) {
   } else {
     num2 += digit;
   }
+
+  if (digit === ".") document.querySelector(".dot-button").disabled = true;
 }
 
 function calculateAndDisplayResult() {

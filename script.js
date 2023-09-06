@@ -119,7 +119,7 @@ function calculateAndDisplayResult() {
     let result = operate(num1, num2, operator);
     clearDisplay();
     addToDisplay(result);
-    num1 = String(result);
+    [num1, num2] = [String(result), ""];
   }
 }
 
@@ -149,20 +149,22 @@ function execute(text) {
 
     // In both num1 and num2 states, getting a new digit updates the number.
     updateNumber(text);
-  } else if (text === "=") {
-    const setEqualOperator = num2 !== "";
-
-    calculateAndDisplayResult();
-    transitionToNum1State();
-    if (setEqualOperator) operator = "=";
   } else {
-    // If no other branches were valid, this means an operator was pressed.
     const displayText = document.querySelector(".display").textContent;
     const lastChar = displayText.slice(-1);
 
     if (!VALID_OPERATORS.includes(lastChar)) {
-      calculateAndDisplayResult();
-      transitionToNum2State(text);
+      if (text === "=") {
+        const setEqualOperator = num2 !== "";
+        calculateAndDisplayResult();
+        transitionToNum1State();
+
+        if (setEqualOperator) operator = "=";
+      } else {
+        // If no other branches were valid, this means an operator was pressed.
+        calculateAndDisplayResult();
+        transitionToNum2State(text);
+      }
     }
   }
 }

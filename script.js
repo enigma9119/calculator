@@ -114,47 +114,33 @@ function updateNumber(digit) {
   if (digit === ".") document.querySelector(".dot-button").disabled = true;
 }
 
-function calculateAndDisplayResult() {
+function calculateAndDisplayResult(pressedButton) {
   if (num2 != "") {
     let result = operate(num1, num2, operator);
     clearDisplay();
     addToDisplay(result);
     [num1, num2] = [result, ""];
+
+    if (pressedButton === "=") operator = "=";
   }
 }
 
-function execute(e) {
-  const classListArray = Array.from(e.target.classList);
-  // QUESTION: Why is it that sometimes the outer class listener is triggered, and sometimes the inner class?
-  if (
-    classListArray.includes("delete") ||
-    classListArray.includes("fa-delete-left")
-  ) {
+function execute(text) {
+  if (text === "Backspace") {
     deleteFromDisplay();
-    return;
-  }
-
-  let buttonText = e.target.textContent;
-  if (
-    classListArray.includes("divide") ||
-    classListArray.includes("fa-divide")
-  ) {
-    buttonText = "/";
-  }
-
-  if (buttonText === "AC") {
+  } else if (text === "AC") {
     clearDisplay();
     transitionToInitialState();
   } else if (state == "initial") {
     // The only way to transition out of the initial state is for the user
     // to input a valid digit.
-    if (isDigit(buttonText)) {
+    if (isDigit(text)) {
       transitionToNum1State();
-      updateNumber(buttonText);
-    } else if ((num1 === "" && buttonText === "-") || buttonText === ".") {
-      updateNumber(buttonText);
+      updateNumber(text);
+    } else if ((num1 === "" && text === "-") || text === ".") {
+      updateNumber(text);
     }
-  } else if (isDigit(buttonText) || buttonText === ".") {
+  } else if (isDigit(text) || text === ".") {
     // If a digit is selected after pressing 'equal to' button, reset everything
     // and transition to num1 state.
     if (operator === "=") {
@@ -164,15 +150,18 @@ function execute(e) {
     }
 
     // In both num1 and num2 states, getting a new digit updates the number.
-    updateNumber(buttonText);
-  } else if (buttonText === "=") {
-    // Calculate if the second number is valid.
-    calculateAndDisplayResult();
-    if (num2 != "") operator = "=";
+    updateNumber(text);
+  } else if (text === "=") {
+    calculateAndDisplayResult(text);
   } else {
-    // If no other branches were valid, this means a valid operator was pressed.
-    calculateAndDisplayResult();
-    transitionToNum2State(buttonText);
+    // If no other branches were valid, this means an operator was pressed.
+    const displayText = document.querySelector(".display").textContent;
+    const lastChar = displayText.slice(-1);
+
+    if (!VALID_OPERATORS.includes(lastChar)) {
+      calculateAndDisplayResult(text);
+      transitionToNum2State(text);
+    }
   }
 }
 
@@ -181,5 +170,43 @@ let state = "initial";
 let [num1, num2, operator] = ["", "", ""];
 const VALID_OPERATORS = ["+", "-", "x", "/", "%"];
 
+// Add mouse support
 const buttons = document.querySelectorAll("button");
-buttons.forEach(button => button.addEventListener("click", execute));
+buttons.forEach(button => button.addEventListener("click", executeMouseEvent));
+
+function executeMouseEvent(e) {
+  let buttonText = e.target.textContent;
+
+  // QUESTION: Why is it that sometimes the outer class listener is triggered, and sometimes the inner class?
+  const classListArray = Array.from(e.target.classList);
+  if (
+    classListArray.includes("delete") ||
+    classListArray.includes("fa-delete-left")
+  ) {
+    buttonText = "Backspace";
+  } else if (
+    classListArray.includes("divide") ||
+    classListArray.includes("fa-divide")
+  ) {
+    buttonText = "/";
+  }
+
+  execute(buttonText);
+}
+
+// Add keyboard support
+window.addEventListener("keydown", executeKeyboardEvent);
+
+function executeKeyboardEvent(e) {
+  let keyText = e.key;
+  if (keyText === "Enter") keyText = "=";
+
+  const key = document.querySelector(`button[data-key="${keyText}"]`);
+
+  if (key) {
+    if (e.key === "c") keyText = "AC";
+    if (e.key === "*") keyText = "x";
+
+    execute(keyText);
+  }
+}

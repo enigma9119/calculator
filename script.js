@@ -114,14 +114,12 @@ function updateNumber(digit) {
   if (digit === ".") document.querySelector(".dot-button").disabled = true;
 }
 
-function calculateAndDisplayResult(pressedButton) {
+function calculateAndDisplayResult() {
   if (num2 != "") {
     let result = operate(num1, num2, operator);
     clearDisplay();
     addToDisplay(result);
-    [num1, num2] = [result, ""];
-
-    if (pressedButton === "=") operator = "=";
+    num1 = String(result);
   }
 }
 
@@ -152,14 +150,18 @@ function execute(text) {
     // In both num1 and num2 states, getting a new digit updates the number.
     updateNumber(text);
   } else if (text === "=") {
-    calculateAndDisplayResult(text);
+    const setEqualOperator = num2 !== "";
+
+    calculateAndDisplayResult();
+    transitionToNum1State();
+    if (setEqualOperator) operator = "=";
   } else {
     // If no other branches were valid, this means an operator was pressed.
     const displayText = document.querySelector(".display").textContent;
     const lastChar = displayText.slice(-1);
 
     if (!VALID_OPERATORS.includes(lastChar)) {
-      calculateAndDisplayResult(text);
+      calculateAndDisplayResult();
       transitionToNum2State(text);
     }
   }

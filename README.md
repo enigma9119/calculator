@@ -13,6 +13,9 @@ For Simple Calculations
 
 - A simple calculator to evaluate expressions
 - Addition, Subtraction, Multiplication, Division, & Modulo
+- Floating point calculation rounded off to 2 decimal places
+- Backspace button to undo previous inputs
+- Keyboard support! Use your keyboard to perform calculations
 
 ## Acknowledgements
 

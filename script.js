@@ -175,23 +175,12 @@ const buttons = document.querySelectorAll("button");
 buttons.forEach(button => button.addEventListener("click", executeMouseEvent));
 
 function executeMouseEvent(e) {
-  let buttonText = e.target.textContent;
+  let dataKeyAttribute = e.currentTarget.getAttribute("data-key");
 
-  // QUESTION: Why is it that sometimes the outer class listener is triggered, and sometimes the inner class?
-  const classListArray = Array.from(e.target.classList);
-  if (
-    classListArray.includes("delete") ||
-    classListArray.includes("fa-delete-left")
-  ) {
-    buttonText = "Backspace";
-  } else if (
-    classListArray.includes("divide") ||
-    classListArray.includes("fa-divide")
-  ) {
-    buttonText = "/";
-  }
+  if (dataKeyAttribute === "c") dataKeyAttribute = "AC";
+  if (dataKeyAttribute === "*") dataKeyAttribute = "x";
 
-  execute(buttonText);
+  execute(dataKeyAttribute);
 }
 
 // Add keyboard support

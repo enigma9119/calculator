@@ -65,15 +65,6 @@ button {
   transition: 0.2s all;
 }
 
-button:hover {
-  background-color: #dfbd86;
-  transform: translateY(-3px);
-}
-
-button:active {
-  transform: translateY(5px) scale(0.98);
-}
-
 .operator-button {
   font-size: 20px;
 }
@@ -84,15 +75,39 @@ button:active {
   margin-right: 12px;
 }
 
-.operator-button:hover {
+/* Prevent hover effect on non-supported devices such as cell phones. */
+@media (hover: hover) {
+  button:hover {
+    background-color: #dfbd86;
+    transform: translateY(-3px);
+  }
+
+  .operator-button:hover {
+    background-color: #8693df;
+  }
+
+  .clear-button:hover {
+    background-color: #eb4b4b;
+  }
+
+  .equal-button:hover {
+    background-color: #86df99;
+  }
+}
+
+button:active {
+  transform: translateY(5px) scale(0.98);
+}
+
+.operator-button:active {
   background-color: #8693df;
 }
 
-.clear-button:hover {
+.clear-button:active {
   background-color: #eb4b4b;
 }
 
-.equal-button:hover {
+.equal-button:active {
   background-color: #86df99;
 }
 

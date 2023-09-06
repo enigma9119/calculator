@@ -1,7 +1,7 @@
 # Calculator
 
 For Simple Calculations
-:link: [**Live Preview**](https://enigma9119.github.io/calculator)
+:link: [**Live Preview**](https://skharat8.github.io/calculator)
 
 ## Built With
 
